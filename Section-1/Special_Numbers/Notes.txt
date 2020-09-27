@@ -1,0 +1,4 @@
+Palindrome Numbers: obvious
+Perfect Numbers: positive integer equal to the sum of its factors, Example : 3 * 2 * 1 = 3 + 2 + 1 = 6, therefore 6 is perfect.
+Armstrong Numbers/Narcisstic Numbers: number equal to the sum of its digits raised to power of the number of digits. 
+    Example: 153 = 1^3 + 5^3 + 3^3, 370 = 3^3 + 7^3
