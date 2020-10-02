@@ -1,0 +1,6 @@
+<cmath>:
+    The pow() function is just choosing between the builtin pow functions depending on the parameters passed.
+        __builtin_powf()/powl() can be used instead of pow() without including cmath, provided the use of parameters is correct.
+        powf: floats, powl: long doubles.
+<vector>:
+    builds on STL Vector, operator[] can be overloaded as demonstrated here.
