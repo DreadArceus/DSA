@@ -6,7 +6,9 @@
         "*.tcc": "cpp",
         "complex": "cpp",
         "random": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "ratio": "cpp",
+        "stdexcept": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
