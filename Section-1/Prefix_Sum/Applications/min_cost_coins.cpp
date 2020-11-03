@@ -1,27 +1,36 @@
-//O(nlongn) but can be further optimised by a very specific algorithm into O(nlogm) where m = minBuy
+//O(nlongn)
 #include <iostream>
 #include <cmath>
 #include <algorithm>
 using namespace std;
-int solve(int a[], int n, int k)
+int solve(int a[], int n, int k, int prefixSum[])
 {
     int minBuy = ceil((double)n / (k + 1)), sum = 0;
-    sort(a, a+n);
-    for(int i = 0; i < minBuy; i++)
-    {
-        sum += a[i];
-    }
-    return sum;
+    return prefixSum[minBuy-1];
 }
 int main()
 {
-    int n = 0, k = 0;
-    cin >> n >> k;
+    int n = 0, q = 0;
+    cin >> n >> q;
     int a[n];
     for(int i = 0; i < n; i++)
     {
         cin >> a[i];
     }
-    int minCost = solve(a, n ,k);
-    cout << minCost;
+
+    sort(a, a + n);
+    int prefixSum[n];
+    prefixSum[0] = a[0];
+    for(int i = 0; i < n; i++)
+    {
+        prefixSum[i] = prefixSum[i - 1] + a[i];
+    }
+
+    while(q--)
+    {
+        int k = 0;
+        cin >> k;
+        int minCost = solve(a, n, k, prefixSum);
+        cout << minCost << "\n";
+    }
 }
