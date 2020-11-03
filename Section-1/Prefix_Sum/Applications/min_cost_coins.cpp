@@ -1,11 +1,12 @@
 //O(nlongn)
+//MultiQuery version
 #include <iostream>
 #include <cmath>
 #include <algorithm>
 using namespace std;
-int solve(int a[], int n, int k, int prefixSum[])
+int solve(int n, int k, int prefixSum[])
 {
-    int minBuy = ceil((double)n / (k + 1)), sum = 0;
+    int minBuy = ceil((double)n / (k + 1));
     return prefixSum[minBuy-1];
 }
 int main()
@@ -21,7 +22,7 @@ int main()
     sort(a, a + n);
     int prefixSum[n];
     prefixSum[0] = a[0];
-    for(int i = 0; i < n; i++)
+    for(int i = 1; i < n; i++)
     {
         prefixSum[i] = prefixSum[i - 1] + a[i];
     }
@@ -30,7 +31,7 @@ int main()
     {
         int k = 0;
         cin >> k;
-        int minCost = solve(a, n, k, prefixSum);
+        int minCost = solve(n, k, prefixSum);
         cout << minCost << "\n";
     }
 }
