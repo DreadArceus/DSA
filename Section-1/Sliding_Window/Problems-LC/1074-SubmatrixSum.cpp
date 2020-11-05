@@ -3,7 +3,7 @@
 //O(N^2 * M^2) or O(N^4) down from O(N^5)
 //From discussions, it seems changing the whole approach from 
 //  sliding window can make a passable O(N^4) solution
-//Thats coming up next
+//Decided to do that and/or the O(N^3) solution post DP
 #include <iostream>
 #include <vector>
 using namespace std;
