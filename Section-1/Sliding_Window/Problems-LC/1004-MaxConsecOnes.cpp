@@ -1,31 +1,43 @@
 //v1: Brute Force
 //v2: Sliding Window
 //v3: Teleporting Window
-//so far... (26/48) - TLE
+//v4: Memory Abuse O(N)
+//      All cases passed - Runtime: 71.81 %ile, Memory Usage: 7.71 %ile
 #include <iostream>
 #include <vector>
 using namespace std;
 
 int solve(vector<int> A, int K)
 {
-    vector<int> prefixSum(A.size(), 0);
-    prefixSum[0] = A[0];
-    for(int i = 1; i < A.size(); i++)
+    int maxCnt = 0, cnt = 0, locK = K, passedZ = 0, leftZ = 0;
+    vector<int> zeroTracker(A.size(), 0);
+    zeroTracker[0] = -1;
+    for(int i = 0; i < A.size(); i++)
     {
-        prefixSum[i] = prefixSum[i-1] + A[i];
-    }
-
-    for(int len = A.size(); len > 0; len--)
-    {
-        for(int i = len-1; i < A.size(); i++)
+        if(K == 0 && A[i] == 0)
         {
-            if(prefixSum[i] - ((i==len-1) ? 0 : prefixSum[i-len]) + K >= len)
+            cnt = 0;
+            continue;
+        }
+        if(A[i] == 0)
+        {
+            zeroTracker[passedZ] = i + 1;
+            passedZ++;
+            if(locK == 0)
             {
-                return len;
+                locK = 1;
+                cnt -= zeroTracker[leftZ] - ((leftZ == 0) ? 0 : zeroTracker[leftZ-1]);
+                leftZ++;
             }
+            locK--;
+        }
+        cnt++;
+        if(cnt > maxCnt)
+        {
+            maxCnt = cnt;
         }
     }
-    return 0;
+    return maxCnt;
 }
 
 int main()
