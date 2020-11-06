@@ -2,39 +2,43 @@
 //v2: Sliding Window
 //v3: Teleporting Window
 //v4: Memory Abuse O(N)
-//      All cases passed - Runtime: 71.81 %ile, Memory Usage: 7.71 %ile
+//v5: Sliding Window + v4 == All cases passed without memory abuse (55.9 mb/O(1) space, O(N) time)
 #include <iostream>
 #include <vector>
 using namespace std;
 
 int solve(vector<int> A, int K)
 {
-    int maxCnt = 0, cnt = 0, locK = K, passedZ = 0, leftZ = 0;
-    vector<int> zeroTracker(A.size(), 0);
-    zeroTracker[0] = -1;
-    for(int i = 0; i < A.size(); i++)
+    int maxCnt = 0, l = 0, ogK = K;
+    for(int r = 0; r < A.size(); r++)
     {
-        if(K == 0 && A[i] == 0)
+        if(A[r] == 0)
         {
-            cnt = 0;
-            continue;
-        }
-        if(A[i] == 0)
-        {
-            zeroTracker[passedZ] = i + 1;
-            passedZ++;
-            if(locK == 0)
+            if(ogK == 0)
             {
-                locK = 1;
-                cnt -= zeroTracker[leftZ] - ((leftZ == 0) ? 0 : zeroTracker[leftZ-1]);
-                leftZ++;
+                l = r + 1;
+                continue;
             }
-            locK--;
+
+            if(K == 0)
+            {
+                for(int i = l; i < r; i++)
+                {
+                    if(A[i] == 0)
+                    {
+                        l = i + 1;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                K--;
+            }
         }
-        cnt++;
-        if(cnt > maxCnt)
+        if(r - l + 1 > maxCnt)
         {
-            maxCnt = cnt;
+            maxCnt = r - l + 1;
         }
     }
     return maxCnt;
