@@ -1,18 +1,30 @@
-//My implementation of Binary Search on an Array
+//the right shifts are inaccurate with my prototype (so left->right~ results in a SEGFAULT)
+//correcting that and converting recursion into a loop
+//v2: 2-Pointer
 #include <iostream>
 using namespace std;
 
-int binarySearch(int a[], int mid, int x, int n)
+int binarySearch(int a[], int x, int n)
 {
-    if(a[mid] == x)
+    int* start = a;
+    int* end = a + n;
+    while(end - start != 0)
     {
-        return mid;
+        int *y = a + (start - a + end - a)/2;
+        if(*y < x)
+        {
+            start = y + 1;
+        }
+        else if(*y > x)
+        {
+            end = y;
+        }
+        else
+        {
+            return y - a;
+        }
     }
-    if(a[mid] > x)
-    {
-        return binarySearch(a, mid/2, x, n);
-    }
-    return binarySearch(a, (n + mid)/2, x, n);
+    return -1;
 }
 
 int main()
@@ -28,7 +40,7 @@ int main()
     int x = 0;
     while(cin >> x)
     {
-        int ansIndex = binarySearch(ar, n/2, x, n);
+        int ansIndex = binarySearch(ar, x, n);
         cout << ansIndex << "\n";
     }
 }
