@@ -1,17 +1,15 @@
-//v2
-//Implementing the widely used quick sort logic
-//Used nested while loop, so test case #3 on HE still timed out
-//However the idea is accurate
+//v2.5
+//TLE was fixed by changing vectors for normal arrays
 #include <iostream>
 #include <vector>
 #include <random>
 using namespace std;
 
-vector<int> quickSort(vector<int> v, int start, int end)
+void quickSort(int v[], int start, int end)
 {
     if(start >= end)
     {
-        return v;
+        return;
     }
 
     int pivot = rand() % (end - start + 1) + start;
@@ -43,10 +41,8 @@ vector<int> quickSort(vector<int> v, int start, int end)
     v[end] = v[pivot];
     v[pivot] = pivot_value;
 
-    v = quickSort(v, start, pivot - 1);
-    v = quickSort(v, pivot + 1, end);
-
-    return v;
+    quickSort(v, start, pivot - 1);
+    quickSort(v, pivot + 1, end);
 }
 
 int main()
@@ -56,14 +52,12 @@ int main()
     srand(time(0));
     int n = 0;
     cin >> n;
-    vector<int> v;
+    int v[n];
     for(int i = 0; i < n; i++)
     {
-        int x = 0;
-        cin >> x;
-        v.push_back(x);
+        cin >> v[i];
     }
-    v = quickSort(v, 0, n - 1);
+    quickSort(v, 0, n - 1);
     for(int x : v)
     {
         cout << x << " ";
