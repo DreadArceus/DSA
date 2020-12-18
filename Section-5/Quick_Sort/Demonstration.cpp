@@ -1,21 +1,23 @@
-//v2.5
-//TLE was fixed by changing vectors for normal arrays
+//v3
+//Readability upgrade
 #include <iostream>
-#include <vector>
 #include <random>
 using namespace std;
 
-void quickSort(int v[], int start, int end)
+//utility swap function (also in <algortihm>)
+void swap(int *x, int *y)
 {
-    if(start >= end)
-    {
-        return;
-    }
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
 
+//this function partitions the subarray around a random pivot
+int partitioner(int v[], int start, int end)
+{
     int pivot = rand() % (end - start + 1) + start;
     int pivot_value = v[pivot];
-    v[pivot] = v[end];
-    v[end] = pivot_value;
+    swap(v[pivot], v[end]);
     pivot = end;
     int l = start, r = end - 1;
     while(true)
@@ -33,16 +35,22 @@ void quickSort(int v[], int start, int end)
         {
             break;
         }
-        int temp = v[l];
-        v[l] = v[r];
-        v[r] = temp;
+        swap(v[l], v[r]);
         pivot = r;
     }
-    v[end] = v[pivot];
-    v[pivot] = pivot_value;
+    swap(v[pivot], v[end]);
+    return pivot;
+}
 
-    quickSort(v, start, pivot - 1);
-    quickSort(v, pivot + 1, end);
+//recursive function for quick sort
+void quickSort(int v[], int start, int end)
+{
+    if(start < end)
+    {
+        int pivot = partitioner(v, start, end);
+        quickSort(v, start, pivot - 1);
+        quickSort(v, pivot + 1, end);
+    }
 }
 
 int main()
