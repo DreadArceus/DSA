@@ -1,21 +1,24 @@
 //Extended Euclidean makes it possible to find solution of x, y
 //  in ax + by = gcd(a, b)
 //Seems specific but solution of ax + by = 1 are modulo multiplicative inverses
+//Recursive version is much more natural, but here is iterative version:
 #include <iostream>
 using namespace std;
 int gcdExtended(int a, int b, int *x, int *y)
 {
-    if(a == 0)
+    *x = 1, *y = 0;
+    int x1 = 0, y1 = 1;
+    while(b)
     {
-        *x = 0;
-        *y = 1;
-        return b;
+        int q = a / b, tempX = *x, tempY = *y;
+        *x = x1, *y = y1;
+        x1 = tempX - x1 * q;
+        y1 = tempY - y1 * q;
+        int temp = b;
+        b = a % b;
+        a = temp;
     }
-    int x1 = 0, y1 = 0;
-    int gcd = gcdExtended(b % a, a, &x1, &y1);
-    *x = y1 - (b/a) * x1;
-    *y = x1;
-    return gcd;
+    return a;
 }
 int main()
 {
