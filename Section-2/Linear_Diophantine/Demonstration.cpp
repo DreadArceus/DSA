@@ -1,4 +1,5 @@
 //Diophantine means we only consider solutions where all values are integral
+//We can find one solution of such an equation with Extended Euclidian
 #include <iostream>
 using namespace std;
 
