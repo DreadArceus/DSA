@@ -1,3 +1,6 @@
+//Extended Euclidean makes it possible to find solution of x, y
+//  in ax + by = gcd(a, b)
+//Seems specific but solution of ax + by = 1 are modulo multiplicative inverses
 #include <iostream>
 using namespace std;
 int gcdExtended(int a, int b, int *x, int *y)
