@@ -32,7 +32,6 @@ void printSolution(int a, int b, int c)
     {
         x *= c/gcd;
         y *= c/gcd;
-        cout << gcd << "\n";
         cout << "Solution: " << x << ", " << y;
     }
 }
