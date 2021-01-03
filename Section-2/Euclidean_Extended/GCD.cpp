@@ -3,18 +3,13 @@
 using namespace std;
 int GCD(int a, int b)
 {
-    while(a && b)
+    while(a)
     {
-        if(a > b)
-        {
-            a %= b;
-        }
-        else
-        {
-            b %= a;
-        }
+        int temp = a;
+        a = b % a;
+        b = temp;
     }
-    return ((a == 0) ? b : a);
+    return b;
 }
 int main()
 {
