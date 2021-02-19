@@ -8,7 +8,8 @@
         "random": "cpp",
         "vector": "cpp",
         "ratio": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "chrono": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
