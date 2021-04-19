@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
+#define int long long
 
 struct segTreeItem
 {
@@ -13,52 +14,38 @@ class segTree
 public:
     segTree(int n)
     {
-        this->nodes.resize(4 * n, this->null);
+        this->nodes.resize(4 * n + 5, this->null);
         this->size = n;
-    }
-    segTreeItem merge(segTreeItem a, segTreeItem b)
-    {
-        segTreeItem result = {min(a.element, b.element)};
-        return result;
     }
     void pointUpdate(int x, segTreeItem val, int index, int l, int r)
     {
+        if (x < l || x >= r)
+            return;
         if (l == x && r == x + 1)
         {
             nodes[index] = val;
-            return;
-        }
-        if (x < l || x >= r)
-        {
             return;
         }
         pointUpdate(x, val, 2 * index, l, (r + l) / 2);
         pointUpdate(x, val, 2 * index + 1, (r + l) / 2, r);
         nodes[index] = merge(nodes[2 * index], nodes[2 * index + 1]);
     }
+    segTreeItem query(int x, int y, int index, int l, int r)
+    {
+        if (y <= l || x >= r)
+            return this->null;
+        if (l >= x && r <= y)
+            return nodes[index];
+        return merge(query(x, y, 2 * index, l, (r + l) / 2),
+                     query(x, y, 2 * index + 1, (r + l) / 2, r));
+    }
     void pointUpdate(int x, segTreeItem val)
     {
         pointUpdate(x, val, 1, 0, size);
     }
-    void rangeUpdate(int x, int y, int val, int index, int l, int r)
+    void pointUpdate(int x, int val)
     {
-    }
-    void rangeUpdate(int x, int y, int val)
-    {
-        rangeUpdate(x, y, val, 1, 0, size);
-    }
-    segTreeItem query(int x, int y, int index, int l, int r)
-    {
-        if (l >= x && r <= y)
-        {
-            return nodes[index];
-        }
-        if (y <= l || x >= r)
-        {
-            return this->null;
-        }
-        return merge(query(x, y, 2 * index, l, (r + l) / 2),
-                     query(x, y, 2 * index + 1, (r + l) / 2, r));
+        pointUpdate(x, {val}, 1, 0, size);
     }
     segTreeItem query(int x, int y)
     {
@@ -67,11 +54,17 @@ public:
 
 private:
     vector<segTreeItem> nodes;
-    segTreeItem null = {INT32_MAX};
+    segTreeItem null = {INT64_MAX};
     int size;
+    segTreeItem merge(segTreeItem a, segTreeItem b)
+    {
+        segTreeItem result;
+        result.element = min(a.element, b.element);
+        return result;
+    }
 };
 
-int main()
+int32_t main()
 {
     int n = 0, q = 0;
     cin >> n >> q;
@@ -80,7 +73,7 @@ int main()
     {
         int h = 0;
         cin >> h;
-        st.pointUpdate(i, {h});
+        st.pointUpdate(i, h);
     }
     while (q--)
     {
@@ -90,6 +83,6 @@ int main()
         if (c == 'q')
             cout << st.query(x - 1, y).element << "\n";
         else if (c == 'u')
-            st.pointUpdate(x - 1, {y});
+            st.pointUpdate(x - 1, y);
     }
 }
