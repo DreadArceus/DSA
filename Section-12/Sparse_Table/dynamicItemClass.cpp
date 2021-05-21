@@ -19,7 +19,7 @@ public:
         this->k = 0;
         while ((1 << k) < n)
             k++;
-        this->table = vector<vector<SpTItem>>(n, vector<SpTItem>(k + 1));
+        this->table.resize(n, vector<SpTItem>(k + 1));
     }
     void insert(int ind, SpTItem val)
     {

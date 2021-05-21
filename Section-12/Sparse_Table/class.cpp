@@ -14,7 +14,7 @@ public:
         this->k = 0;
         while ((1 << k) < n)
             k++;
-        this->table = vector<vector<int>>(n, vector<int>(k + 1));
+        this->table.resize(n, vector<int>(k + 1));
     }
     void insert(int ind, int val)
     {
