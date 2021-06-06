@@ -51,9 +51,16 @@ vector<int> dijkstraSparse(int n, int m, int source)
         pq.pop();
         while (top.first != d[top.second])
         {
+            if (pq.empty())
+            {
+                top = {-1, -1};
+                break;
+            }
             top = pq.top();
             pq.pop();
         }
+        if (top.first == -1)
+            break;
         int v = top.second;
         if (d[v] == INT64_MAX)
             break;
