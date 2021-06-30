@@ -1,3 +1,0 @@
-Not much in this topic, just some fun patterns.
-Did every single example on this website: https://www.faceprep.in/c/pattern-programs-in-c/
-Everything was easy, my favourites are The Left/Right Arrows and the palindrome problems.

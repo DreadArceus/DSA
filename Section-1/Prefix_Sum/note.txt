@@ -1,5 +1,0 @@
-Check out the example problem given on gfg:
-    https://www.geeksforgeeks.org/prefix-sum-array-implementation-applications-competitive-programming/
-Very cool use of prefix sum array
-Basically, knowing what a prefix sum array does, we can manipulate only the start and end of a range
-    and get the desired array via prefix sum

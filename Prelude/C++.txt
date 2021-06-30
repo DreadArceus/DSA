@@ -1,4 +1,0 @@
-Basics, Syntax etc all done.
-Will put any new syntax/built-in functions I learn here:
--->If-Else Shorthand:
-  (condition) ? {if true} : {if false}
