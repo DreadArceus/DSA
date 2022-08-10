@@ -38,6 +38,7 @@ class LazySegTree
         {
             pendingLazy[index] = true;
             lazy[index] = val;
+            propagateLazy(index, l, r);
             return;
         }
         rangeUpdate(x, y, val, 2 * index, l, (r + l) / 2);
