@@ -1,103 +1,137 @@
-struct SegTreeItem
-{
-    int element;
-};
-
-class LazySegTree
+template <typename STI, typename MF, typename pLF, typename rLF> class LazySegTree
 {
   public:
-    LazySegTree(int n)
+    LazySegTree(int n, MF &m, pLF &p, rLF &r, STI nl) : merge(m), push(p), resolve(r)
     {
-        this->nodes.resize(4 * n + 5, this->null);
-        this->lazy.resize(4 * n + 5, {0});
-        this->pendingLazy.resize(4 * n + 5, false);
-        this->size = n;
+        int sf = 4 * n + 5;
+        null = nl;
+        nodes.assign(sf, null);
+        lazy.assign(sf, {0});
+        pending.assign(sf, false);
+        size = n;
     }
-    void pointUpdate(int x, SegTreeItem val, int index, int l, int r)
+    void pointUpdate(int x, STI val, int id, int l, int r)
     {
-        if (pendingLazy[index])
-            propagateLazy(index, l, r);
+        if (pending[id])
+            propagate(id, l, r);
         if (x < l || x >= r)
             return;
+
         if (l == x && r == x + 1)
         {
-            nodes[index] = val;
+            nodes[id] = val;
             return;
         }
-        pointUpdate(x, val, 2 * index, l, (r + l) / 2);
-        pointUpdate(x, val, 2 * index + 1, (r + l) / 2, r);
-        nodes[index] = merge(nodes[2 * index], nodes[2 * index + 1]);
+
+        int mid = (l + r) / 2;
+
+        pointUpdate(x, val, 2 * id, l, mid);
+        pointUpdate(x, val, 2 * id + 1, mid, r);
+
+        nodes[id] = merge(nodes[2 * id], nodes[2 * id + 1]);
     }
-    void rangeUpdate(int x, int y, SegTreeItem val, int index, int l, int r)
+    void rangeUpdate(int x, int y, STI val, int id, int l, int r)
     {
-        if (pendingLazy[index])
-            propagateLazy(index, l, r);
+        if (pending[id])
+            propagate(id, l, r);
         if (y <= l || x >= r)
             return;
+
         if (l >= x && r <= y)
         {
-            pendingLazy[index] = true;
-            lazy[index] = val;
-            propagateLazy(index, l, r);
+            pending[id] = true;
+            lazy[id] = val;
+            propagate(id, l, r);
             return;
         }
-        rangeUpdate(x, y, val, 2 * index, l, (r + l) / 2);
-        rangeUpdate(x, y, val, 2 * index + 1, (r + l) / 2, r);
-        nodes[index] = merge(nodes[2 * index], nodes[2 * index + 1]);
+
+        int mid = (l + r) / 2;
+
+        rangeUpdate(x, y, val, 2 * id, l, mid);
+        rangeUpdate(x, y, val, 2 * id + 1, mid, r);
+
+        nodes[id] = merge(nodes[2 * id], nodes[2 * id + 1]);
     }
-    SegTreeItem query(int x, int y, int index, int l, int r)
+    STI query(int x, int y, int id, int l, int r)
     {
-        if (pendingLazy[index])
-            propagateLazy(index, l, r);
+        if (pending[id])
+            propagate(id, l, r);
         if (y <= l || x >= r)
             return this->null;
+
         if (l >= x && r <= y)
-            return nodes[index];
-        return merge(query(x, y, 2 * index, l, (r + l) / 2), query(x, y, 2 * index + 1, (r + l) / 2, r));
+            return nodes[id];
+
+        int mid = (l + r) / 2;
+
+        return merge(query(x, y, 2 * id, l, mid), query(x, y, 2 * id + 1, mid, r));
     }
-    void pointUpdate(int x, SegTreeItem val)
+    int descent(int id, int l, int r)
     {
-        pointUpdate(x, val, 1, 0, size);
+        if (pending[id])
+            propagate(id, l, r);
+
+        if (l == r - 1)
+            return l ? l : -1;
+
+        int mid = (l + r) / 2;
+
+        if (pending[2 * id + 1])
+            propagate(2 * id + 1, mid, r);
+
+        if (nodes[2 * id + 1].e < 0)
+            return descent(2 * id + 1, mid, r);
+        return descent(2 * id, l, mid);
     }
     void pointUpdate(int x, int val)
     {
         pointUpdate(x, {val}, 1, 0, size);
     }
-    void rangeUpdate(int x, int y, SegTreeItem val)
-    {
-        rangeUpdate(x, y, val, 1, 0, size);
-    }
     void rangeUpdate(int x, int y, int val)
     {
         rangeUpdate(x, y, {val}, 1, 0, size);
     }
-    SegTreeItem query(int x, int y)
+    STI query(int x, int y)
     {
         return query(x, y, 1, 0, size);
     }
+    int descent()
+    {
+        return descent(1, 0, size);
+    }
 
   private:
-    vector<SegTreeItem> nodes, lazy;
-    vector<bool> pendingLazy;
-    SegTreeItem null = {INT64_MAX};
+    vector<STI> nodes, lazy;
+    vector<bool> pending;
+    STI null;
     int size;
-    void propagateLazy(int index, int l, int r)
+
+    MF &merge;
+    pLF &push;
+    rLF &resolve;
+
+    void propagate(int id, int l, int r)
     {
         if (l != r - 1)
         {
-            pendingLazy[2 * index] = true;
-            pendingLazy[2 * index + 1] = true;
-            lazy[2 * index].element += lazy[index].element;
-            lazy[2 * index + 1].element += lazy[index].element;
+            pending[2 * id] = true, push(lazy[2 * id], lazy[id]);
+            pending[2 * id + 1] = true, push(lazy[2 * id + 1], lazy[id]);
         }
-        nodes[index].element += lazy[index].element;
-        lazy[index].element = 0;
-        pendingLazy[index] = false;
-    }
-    SegTreeItem merge(SegTreeItem a, SegTreeItem b)
-    {
-        SegTreeItem result;
-        result.element = min(a.element, b.element);
-        return result;
+        pending[id] = false, resolve(nodes[id], lazy[id]);
     }
 };
+struct Item
+{
+    int e;
+};
+const auto merge = [&](Item &a, Item &b) -> Item {
+    Item result;
+    result.e = min(a.e, b.e);
+    return result;
+};
+const auto push = [&](Item &a, Item &b) -> void { a.e += b.e; };
+const auto resolve = [&](Item &node, Item &lazy) -> void {
+    node.e += lazy.e;
+    lazy.e = 0;
+};
+// LazySegTree sa(n, merge, push, resolve, Item({0}));
