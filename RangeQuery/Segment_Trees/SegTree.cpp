@@ -1,58 +1,81 @@
-struct SegTreeItem
-{
-    int element;
-};
-
-class SegTree
+template <typename STI, typename MF> class SegTree
 {
   public:
-    SegTree(int n)
+    SegTree(int n, MF &m, STI nl) : null(nl), merge(m)
     {
-        this->nodes.resize(4 * n + 5, this->null);
-        this->size = n;
+        int sf = 4 * n + 5;
+        nodes.assign(sf, null);
+        size = n;
     }
-    void pointUpdate(int x, SegTreeItem val, int index, int l, int r)
+    void pointUpdate(int x, STI val, int id, int l, int r)
     {
         if (x < l || x >= r)
             return;
+
         if (l == x && r == x + 1)
         {
-            nodes[index] = val;
+            nodes[id] = val;
             return;
         }
-        pointUpdate(x, val, 2 * index, l, (r + l) / 2);
-        pointUpdate(x, val, 2 * index + 1, (r + l) / 2, r);
-        nodes[index] = merge(nodes[2 * index], nodes[2 * index + 1]);
+
+        int mid = (l + r) / 2;
+
+        pointUpdate(x, val, 2 * id, l, mid);
+        pointUpdate(x, val, 2 * id + 1, mid, r);
+
+        nodes[id] = merge(nodes[2 * id], nodes[2 * id + 1]);
     }
-    SegTreeItem query(int x, int y, int index, int l, int r)
+    STI query(int x, int y, int id, int l, int r)
     {
         if (y <= l || x >= r)
             return this->null;
+
         if (l >= x && r <= y)
-            return nodes[index];
-        return merge(query(x, y, 2 * index, l, (r + l) / 2), query(x, y, 2 * index + 1, (r + l) / 2, r));
+            return nodes[id];
+
+        int mid = (l + r) / 2;
+
+        return merge(query(x, y, 2 * id, l, mid), query(x, y, 2 * id + 1, mid, r));
     }
-    void pointUpdate(int x, SegTreeItem val)
+    int descent(int k, int id, int l, int r)
     {
-        pointUpdate(x, val, 1, 0, size);
+        if (l == r - 1)
+            return l;
+
+        int mid = (l + r) / 2;
+
+        if (nodes[2 * id].e >= k)
+            return descent(k, 2 * id, l, mid);
+        return descent(k - nodes[2 * id].e, 2 * id + 1, mid, r);
     }
     void pointUpdate(int x, int val)
     {
         pointUpdate(x, {val}, 1, 0, size);
     }
-    SegTreeItem query(int x, int y)
+    STI query(int x, int y)
     {
         return query(x, y, 1, 0, size);
     }
+    int get(int id)
+    {
+        return descent(id + 1, 1, 0, size);
+    }
 
   private:
-    vector<SegTreeItem> nodes;
-    SegTreeItem null = {INT64_MAX};
+    vector<STI> nodes;
+    STI null;
     int size;
-    SegTreeItem merge(SegTreeItem a, SegTreeItem b)
-    {
-        SegTreeItem result;
-        result.element = min(a.element, b.element);
-        return result;
-    }
+
+    MF &merge;
 };
+
+struct Item
+{
+    int e;
+};
+const auto merge = [&](Item &a, Item &b) -> Item {
+    Item result;
+    result.e = a.e + b.e;
+    return result;
+};
+// SegTree st(n, merge, Item({0}));
