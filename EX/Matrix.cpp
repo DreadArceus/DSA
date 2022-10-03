@@ -37,6 +37,7 @@ class Matrix
     }
     Matrix pow(long long p) const
     {
+        assert(n == m);
         Matrix res = Matrix(n, m);
         for (int i = 0; i < n; i++)
             res.a[i][i] = 1;
