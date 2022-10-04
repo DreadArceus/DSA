@@ -1,6 +1,6 @@
 template <int mod> struct ModInt
 {
-    int x;
+    int32_t x;
 
     ModInt() : x(0)
     {
